@@ -21,6 +21,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('main.index') }}">
+                {# <img> 标签的 alt 属性,如果无法显示图像，浏览器将显示替代文本 #}
                 <img src="{{ url_for('static', filename='favicon.ico') }}" alt="Albumy">
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"

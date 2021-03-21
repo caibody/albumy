@@ -7,6 +7,7 @@
 """
 import os
 
+# Click 只要很少的代码就可以优雅地创造一个命令行工具
 import click
 from flask import Flask, render_template
 from flask_login import current_user
@@ -53,6 +54,7 @@ def register_extensions(app):
 
 
 def register_blueprints(app):
+    # 程序入口不添加url_prefix，127.0.0.1==main.index()
     app.register_blueprint(main_bp)
     app.register_blueprint(user_bp, url_prefix='/user')
     app.register_blueprint(auth_bp, url_prefix='/auth')
@@ -112,6 +114,7 @@ def register_commands(app):
         if drop:
             click.confirm('This operation will delete the database, do you want to continue?', abort=True)
             db.drop_all()
+            # click.echo在命令行中打印
             click.echo('Drop tables.')
         db.create_all()
         click.echo('Initialized database.')

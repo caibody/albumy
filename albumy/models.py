@@ -81,7 +81,7 @@ class Collect(db.Model):
     collector = db.relationship('User', back_populates='collections', lazy='joined')
     collected = db.relationship('Photo', back_populates='collectors', lazy='joined')
 
-
+# 将User表中的name、username注册为全文搜索
 @whooshee.register_model('name', 'username')
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -159,6 +159,8 @@ class User(db.Model, UserMixin):
     def is_followed_by(self, user):
         return self.followers.filter_by(follower_id=user.id).first() is not None
 
+    # @property装饰器来创建只读属性，@property装饰器会将方法转换为相同名称的只读属性,可以与所定义的属性配合使用，这样可以防止属性被修改。
+    # 调用的时候使用.followed_photos，后面不能加()
     @property
     def followed_photos(self):
         return Photo.query.join(Follow, Follow.followed_id == Photo.author_id).filter(Follow.follower_id == self.id)

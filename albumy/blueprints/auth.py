@@ -73,6 +73,7 @@ def register():
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
+        # 生成token
         token = generate_token(user=user, operation='confirm')
         send_confirm_email(user=user, token=token)
         flash('Confirm email sent, check your inbox.', 'info')
@@ -86,6 +87,7 @@ def confirm(token):
     if current_user.confirmed:
         return redirect(url_for('main.index'))
 
+    # 验证要求
     if validate_token(user=current_user, token=token, operation=Operations.CONFIRM):
         flash('Account confirmed.', 'success')
         return redirect(url_for('main.index'))
@@ -93,7 +95,7 @@ def confirm(token):
         flash('Invalid or expired token.', 'danger')
         return redirect(url_for('.resend_confirm_email'))
 
-
+# 如果验证不成功，使用当前登录的用户名再发送一个token给指定邮箱
 @auth_bp.route('/resend-confirm-email')
 @login_required
 def resend_confirm_email():

@@ -23,12 +23,14 @@ from albumy.extensions import db
 from albumy.models import User
 from albumy.settings import Operations
 
-
+# expire_in有效时间，单位s，默认3600
 def generate_token(user, operation, expire_in=None, **kwargs):
+    # s = Serializer(密钥, 有效时间)
     s = Serializer(current_app.config['SECRET_KEY'], expire_in)
-
+    # 要被签名的数据
     data = {'id': user.id, 'operation': operation}
     data.update(**kwargs)
+    # 把数据进行签名使用.dumps
     return s.dumps(data)
 
 

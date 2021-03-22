@@ -31,6 +31,9 @@ class RegisterForm(FlaskForm):
     password2 = PasswordField('Confirm password', validators=[DataRequired()])
     submit = SubmitField()
 
+    # 如果想要对表单中的某个字段进行自定义验证，则需要对这个字段进行单独的验证
+    # 1、定义一个方法，命名规则为：validate_字段名(self, filed)
+    # 2、在方法中，使用filed.data获取字段的值
     def validate_email(self, field):
         if User.query.filter_by(email=field.data.lower()).first():
             raise ValidationError('The email is already in use.')

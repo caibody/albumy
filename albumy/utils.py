@@ -72,13 +72,18 @@ def rename_image(old_filename):
 def resize_image(image, filename, base_width):
     filename, ext = os.path.splitext(filename)
     img = Image.open(image)
+    # 如果图片的宽度小于base_width，直接返回图片
     if img.size[0] <= base_width:
         return filename + ext
+    #如果图片宽度超了base_width，计算出要缩小的百分比
     w_percent = (base_width / float(img.size[0]))
+    # 计算图片高度
     h_size = int((float(img.size[1]) * float(w_percent)))
+    # 调整图片大小，抗锯齿处理
     img = img.resize((base_width, h_size), PIL.Image.ANTIALIAS)
-
+    # 给新图片命名
     filename += current_app.config['ALBUMY_PHOTO_SUFFIX'][base_width] + ext
+    #quality参数： 保存图像的质量，值的范围从1（最差）到95（最佳）。 默认值为75，使用中应尽量避免高于95的值; 100会禁用部分JPEG压缩算法，并导致大文件图像质量几乎没有任何增益。
     img.save(os.path.join(current_app.config['ALBUMY_UPLOAD_PATH'], filename), optimize=True, quality=85)
     return filename
 

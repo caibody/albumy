@@ -103,7 +103,7 @@ def read_all_notification():
     flash('All notifications archived.', 'success')
     return redirect(url_for('.show_notifications'))
 
-
+# 在photo.html中使用
 @main_bp.route('/uploads/<path:filename>')
 def get_image(filename):
     return send_from_directory(current_app.config['ALBUMY_UPLOAD_PATH'], filename)
@@ -113,17 +113,21 @@ def get_image(filename):
 def get_avatar(filename):
     return send_from_directory(current_app.config['AVATARS_SAVE_PATH'], filename)
 
-
+# user\index.html使用，用户没有图片的时候才会显示upload超链接
 @main_bp.route('/upload', methods=['GET', 'POST'])
 @login_required
 @confirm_required
 @permission_required('UPLOAD')
 def upload():
+    print(request.files)
     if request.method == 'POST' and 'file' in request.files:
         f = request.files.get('file')
-        filename = rename_image(f.filename)
+        # print(type(f)) #<class 'werkzeug.datastructures.FileStorage'>
+        filename = rename_image(f.filename) #重命名文件，使用uuid4防止重名
         f.save(os.path.join(current_app.config['ALBUMY_UPLOAD_PATH'], filename))
+        # 把图片缩小成小图，命名为filename_s
         filename_s = resize_image(f, filename, current_app.config['ALBUMY_PHOTO_SIZE']['small'])
+        # 把图片缩小成中图，命名为filename_m
         filename_m = resize_image(f, filename, current_app.config['ALBUMY_PHOTO_SIZE']['medium'])
         photo = Photo(
             filename=filename,

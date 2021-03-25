@@ -10,7 +10,7 @@ from functools import wraps
 from flask import Markup, flash, url_for, redirect, abort
 from flask_login import current_user
 
-
+# 用来判断用户是否已经验证
 def confirm_required(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
@@ -25,7 +25,7 @@ def confirm_required(func):
         return func(*args, **kwargs)
     return decorated_function
 
-
+# 用来判断用户是否有某个操作权限
 def permission_required(permission_name):
     def decorator(func):
         @wraps(func)
@@ -36,6 +36,6 @@ def permission_required(permission_name):
         return decorated_function
     return decorator
 
-
+# 需要ADMINISTRATER权限
 def admin_required(func):
     return permission_required('ADMINISTER')(func)
